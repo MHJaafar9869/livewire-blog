@@ -24,6 +24,8 @@
 
     @include('layouts.shared.header')
 
+    @yield('hero')
+
     <main class="container mx-auto px-5 flex flex-grow">
         {{ $slot }}
     </main>
@@ -31,6 +33,7 @@
     @include('layouts.shared.footer')
 
     @stack('modals')
+
     @livewireScripts
 </body>
 
