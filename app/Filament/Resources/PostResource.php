@@ -6,6 +6,7 @@ use App\Filament\Resources\PostResource\Pages;
 use App\Filament\Resources\PostResource\RelationManagers;
 use App\Models\Post;
 use Filament\Forms;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -35,8 +36,14 @@ class PostResource extends Resource
                         }),
                     TextInput::make('slug')->required()->minLength(1)->maxLength(150)
                         ->unique(ignoreRecord: true),
+                    RichEditor::make('body')
+                        ->required()
+                        ->fileAttachmentsDirectory('posts/images')
+                        ->columnSpanFull()
+                ])->columns(2),
+                Section::make('Meta')->schema([
+                    // TODO: Image, Publish Date, Featured.
                 ]),
-                Section::make('Meta')->schema([]),
             ]);
     }
 
