@@ -6,12 +6,17 @@ use App\Filament\Resources\PostResource\Pages;
 use App\Filament\Resources\PostResource\RelationManagers;
 use App\Models\Post;
 use Filament\Forms;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -43,6 +48,15 @@ class PostResource extends Resource
                 ])->columns(2),
                 Section::make('Meta')->schema([
                     // TODO: Image, Publish Date, Featured.
+                    FileUpload::make('image')->image()->directory('posts/thumbnails')->visibility('public')
+                        ->preserveFilenames()->columnSpanFull(),
+                    DateTimePicker::make('published_at')->label('Publish Date')->default(now())->required(),
+                    Checkbox::make('is_featured')->label('Featured')->inline(),
+                    TextInput::make('author.name')
+                        ->label('Author')
+                        ->default(fn(Post $record): string => $record->author?->name ?? 'Unknown')
+                        ->disabled()
+                        ->columnSpanFull(),
                 ]),
             ]);
     }
@@ -51,7 +65,13 @@ class PostResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('id')->sortable(),
+                TextColumn::make('title')->searchable()->sortable(),
+                TextColumn::make('slug')->searchable()->sortable(),
+                TextColumn::make('published_at')->dateTime()->sortable(),
+                BooleanColumn::make('is_featured')->label('Featured')->sortable(),
+                TextColumn::make('created_at')->dateTime()->sortable(),
+                TextColumn::make('updated_at')->dateTime()->sortable(),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),

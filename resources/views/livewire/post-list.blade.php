@@ -3,7 +3,7 @@
         <div class="text-xl font-semibold text-gray-900">
             @if ($this->search)
                 Search Results for:
-                <span class="text-yellow-600">{{ $this->search }}</span>
+                <span class="text-yellow-600 border-b border-yellow-600">{{ $this->search }}</span>
                 </h3>
             @endif
         </div>

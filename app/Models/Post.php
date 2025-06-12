@@ -14,7 +14,7 @@ class Post extends Model
     /** @use HasFactory<\Database\Factories\PostFactory> */
     use HasFactory, SoftDeletes;
 
-    protected $guarded = [];
+    protected $fillable = ['user_id', 'image', 'title', 'slug', 'body', 'published_at', 'is_featured'];
 
     protected $casts = [
         'published_at' => 'datetime',
@@ -45,6 +45,11 @@ class Post extends Model
     public function author()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class);
     }
 
     public function getExcerpt()

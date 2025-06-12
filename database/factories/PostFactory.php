@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 // use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factories\Factory;
 // use Smknstd\FakerPicsumImages\FakerPicsumImagesProvider;
@@ -20,10 +21,15 @@ class PostFactory extends Factory
      */
     public function definition(): array
     {
+        $seed = $this->faker->unique()->slug(); // Generate a unique seed for the image URL
+        $imageUrl = "https://picsum.photos/seed/{$seed}/800/600";
+        $filename = "posts/images/{$seed}.jpg"; // Use the seed to create a unique filename
+        $imageUrlContent = file_get_contents($imageUrl); // Fetch the image content from the URL
+        Storage::disk('public')->put($filename, $imageUrlContent); // Store the image in the public disk
 
         return [
             'user_id' => User::factory(),
-            'image' => 'https://picsum.photos/seed/' . $this->faker->unique()->slug() . '/800/600',
+            'image' => $filename,
             'title' => $this->faker->sentence(),
             'slug' => $this->faker->unique()->slug(3),
             'body' => $this->faker->paragraphs(10, true),
