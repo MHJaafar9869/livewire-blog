@@ -11,6 +11,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -32,6 +33,7 @@ class PostResource extends Resource
     {
         return $form
             ->schema([
+                // Main content information
                 Section::make('Main Content')->schema([
                     TextInput::make('title')
                         ->live(debounce: 500)->required()->minLength(1)->maxLength(150)
@@ -46,17 +48,22 @@ class PostResource extends Resource
                         ->fileAttachmentsDirectory('posts/images')
                         ->columnSpanFull()
                 ])->columns(2),
+                // Meta information section
                 Section::make('Meta')->schema([
-                    // TODO: Image, Publish Date, Featured.
                     FileUpload::make('image')->image()->directory('posts/thumbnails')->visibility('public')
                         ->preserveFilenames()->columnSpanFull(),
                     DateTimePicker::make('published_at')->label('Publish Date')->default(now())->required(),
                     Checkbox::make('is_featured')->label('Featured')->inline(),
-                    TextInput::make('author.name')
-                        ->label('Author')
-                        ->default(fn(Post $record): string => $record->author?->name ?? 'Unknown')
-                        ->disabled()
-                        ->columnSpanFull(),
+                    Select::make('author')
+                        ->relationship('author', 'name')
+                        ->required()
+                        ->searchable()
+                        ->preload(),
+                    Select::make('categories')
+                        ->multiple()
+                        ->relationship('categories', 'title')
+                        ->searchable()
+                        ->preload(),
                 ]),
             ]);
     }

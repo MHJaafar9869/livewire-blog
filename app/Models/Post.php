@@ -55,9 +55,14 @@ class Post extends Model
     public function getExcerpt()
     {
         $excerpt = strip_tags($this->body);
-        $excerpt = str_replace(["\r", "\n"], ' ', $excerpt);
+        $excerpt = str_replace(["\r", "\n"], ' ', $excerpt); // Replace new lines with spaces
         $excerpt = preg_replace('/\s+/', ' ', $excerpt); // Remove extra spaces
-        $excerpt = Str::limit(rtrim($excerpt, ' .'), 150, '...'); // Limit to 150 characters
+        $excerpt = Str::limit(rtrim($excerpt, ' .'), 150, '...'); // Limit to 150 characters and add ellipsis
+        $excerpt = htmlspecialchars($excerpt, ENT_QUOTES, 'UTF-8'); // Escape HTML entities
+
+        if (empty($excerpt)) {
+            $excerpt = 'No content available.';
+        }
 
         return $excerpt;
     }
