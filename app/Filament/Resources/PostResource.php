@@ -17,6 +17,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Columns\CheckboxColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -57,8 +59,7 @@ class PostResource extends Resource
                     Select::make('author')
                         ->relationship('author', 'name')
                         ->required()
-                        ->searchable()
-                        ->preload(),
+                        ->searchable(),
                     Select::make('categories')
                         ->multiple()
                         ->relationship('categories', 'title')
@@ -72,13 +73,13 @@ class PostResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->sortable(),
+                ImageColumn::make('image')
+                    ->label('Thumbnail'),
                 TextColumn::make('title')->searchable()->sortable(),
                 TextColumn::make('slug')->searchable()->sortable(),
-                TextColumn::make('published_at')->dateTime()->sortable(),
-                BooleanColumn::make('is_featured')->label('Featured')->sortable(),
-                TextColumn::make('created_at')->dateTime()->sortable(),
-                TextColumn::make('updated_at')->dateTime()->sortable(),
+                TextColumn::make('author.name')->searchable()->sortable(),
+                TextColumn::make('published_at')->date('Y-m-d')->searchable()->sortable(),
+                CheckboxColumn::make('is_featured')->label('Status')->inline(),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),

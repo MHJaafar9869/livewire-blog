@@ -17,5 +17,5 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     });
 
 Route::get('/', HomeController::class)->name('home');
-Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
-Route::get('/post/{post}', [PostController::class, 'show'])->name('post.show');
+Route::get('/blog', [PostController::class, 'index'])->name('posts.index');
+Route::get('/blog/{post:slug}', [PostController::class, 'show'])->name('post.show');

@@ -7,6 +7,7 @@ use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Post extends Model
@@ -33,6 +34,11 @@ class Post extends Model
             ->latest('published_at');
     }
 
+    public function getThumbnailImage()
+    {
+        return str_contains($this->image, 'http') ? $this->image : Storage::disk('public')->url($this->image);
+    }
+
     public function scopeSearch(Builder $query, string $searchTerm)
     {
         if (trim($searchTerm) === '') {
@@ -40,6 +46,13 @@ class Post extends Model
         }
 
         return $query->where('title', 'LIKE', "%{$searchTerm}%");
+    }
+
+    public function scopeWithCategory(Builder $query, string $category)
+    {
+        return $query->whereHas('categories', function (Builder $query) use ($category) {
+            $query->where('slug', $category);
+        });
     }
 
     public function author()
