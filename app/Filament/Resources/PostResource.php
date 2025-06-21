@@ -56,7 +56,7 @@ class PostResource extends Resource
                         ->preserveFilenames()->columnSpanFull(),
                     DateTimePicker::make('published_at')->label('Publish Date')->default(now())->required(),
                     Checkbox::make('is_featured')->label('Featured')->inline(),
-                    Select::make('author')
+                    Select::make('user_id')
                         ->relationship('author', 'name')
                         ->required()
                         ->searchable(),
