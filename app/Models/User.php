@@ -13,70 +13,75 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable implements MustVerifyEmail
 {
 
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens,
-        HasFactory,
-        HasProfilePhoto,
-        Notifiable,
-        TwoFactorAuthenticatable;
+  /** @use HasFactory<\Database\Factories\UserFactory> */
+  use HasApiTokens,
+    HasFactory,
+    HasProfilePhoto,
+    Notifiable,
+    TwoFactorAuthenticatable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
+  /**
+   * The attributes that are mass assignable.
+   *
+   * @var array<int, string>
+   */
+  protected $fillable = [
+    'name',
+    'email',
+    'password',
+  ];
+
+  /**
+   * The attributes that should be hidden for serialization.
+   *
+   * @var array<int, string>
+   */
+  protected $hidden = [
+    'password',
+    'remember_token',
+    'two_factor_recovery_codes',
+    'two_factor_secret',
+  ];
+
+  /**
+   * The accessors to append to the model's array form.
+   *
+   * @var array<int, string>
+   */
+  protected $appends = [
+    'profile_photo_url',
+  ];
+
+  /**
+   * Get the attributes that should be cast.
+   *
+   * @return array<string, string>
+   */
+  protected function casts(): array
+  {
+    return [
+      'email_verified_at' => 'datetime',
+      'password' => 'hashed',
     ];
+  }
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-        'two_factor_recovery_codes',
-        'two_factor_secret',
-    ];
+  public function posts()
+  {
+    return $this->hasMany(Post::class);
+  }
 
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array<int, string>
-     */
-    protected $appends = [
-        'profile_photo_url',
-    ];
+  public function likes()
+  {
+    return $this->belongsToMany(Post::class, 'post_like')->withTimestamps();
+  }
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+  public function hasLiked(Post $post): bool
+  {
+    return $this->likes()->where('post_id', $post->id)->exists();
+  }
 
-    public function posts()
-    {
-        return $this->hasMany(Post::class);
-    }
-
-    public function likes()
-    {
-        return $this->belongsToMany(Post::class, 'post_like')->withTimestamps();
-    }
-
-    public function hasLiked(Post $post): bool
-    {
-        return $this->likes()->where('post_id', $post->id)->exists();
-    }
+  public function comments()
+  {
+    return $this->hasMany(PostComment::class);
+  }
 }
