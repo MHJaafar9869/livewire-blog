@@ -2,39 +2,40 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+  <title>{{ config('app.name', 'Laravel') }}</title>
+  <link rel="shortcut icon" href="{{ asset('blogger.png') }}" type="image/x-icon">
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.bunny.net">
+  <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+  <!-- Scripts -->
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <!-- Styles -->
-    @livewireStyles
+  <!-- Styles -->
+  @livewireStyles
 </head>
 
 <body class="font-sans antialiased">
-    <x-banner />
+  <x-banner />
 
-    @include('layouts.shared.header')
+  @include('layouts.shared.header')
 
-    @yield('hero')
+  @yield('hero')
 
-    <main class="container mx-auto px-5 flex flex-grow">
-        {{ $slot }}
-    </main>
+  <main class="container mx-auto px-5 flex flex-grow">
+    {{ $slot }}
+  </main>
 
-    @include('layouts.shared.footer')
+  @include('layouts.shared.footer')
 
-    @stack('modals')
+  @stack('modals')
 
-    @livewireScripts
+  @livewireScripts
 </body>
 
 </html>

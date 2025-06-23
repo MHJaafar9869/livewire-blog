@@ -22,7 +22,7 @@ class PostComment extends Model
     return $this->belongsTo(Post::class);
   }
 
-  public function comments()
+  public function commentable()
   {
     return $this->morphTo();
   }
