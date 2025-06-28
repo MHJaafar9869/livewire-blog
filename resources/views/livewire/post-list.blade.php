@@ -18,17 +18,22 @@
       @endif
     </div>
     <div id="filter-selector" class="flex items-center space-x-4 font-light ">
+      <div class="flex items-center space-x-2 border-e-2 p-5 border-gray-300">
+        <x-label for="popularbtn" value="Popular" />
+        <x-checkbox id="popularbtn" wire:model.live="popular" />
+      </div>
       <button class="{{ $sort === 'desc' ? 'text-gray-900 border-b border-gray-700' : 'text-gray-500' }} py-4"
         wire:click="toggleSort('desc')">Latest</button>
 
       <button class="{{ $sort === 'asc' ? 'text-gray-900 border-b border-gray-700' : 'text-gray-500' }} py-4"
         wire:click="toggleSort('asc')">Oldest</button>
-
     </div>
   </div>
   <div class="py-4">
     @foreach ($this->posts as $post)
-      <x-posts.post-item :post="$post" />
+      <div wire:key="post-item-{{ $post->id }}">
+        <x-posts.post-item :post="$post" />
+      </div>
     @endforeach
   </div>
   <div class="my-2">

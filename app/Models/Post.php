@@ -23,20 +23,13 @@ class Post extends Model
 
   public function scopePublished(Builder $query)
   {
-    return $query->whereNotNull('published_at')
-      ->where('published_at', '<=', Carbon::now());
+    return $query->where('published_at', '<=', Carbon::now());
   }
 
   public function scopeFeatured(Builder $query)
   {
     return $query->where('is_featured', '=', true)
-      ->published()
       ->latest('published_at');
-  }
-
-  public function getThumbnailUrl()
-  {
-    return str_contains($this->image, 'http') ? $this->image : Storage::disk('public')->url($this->image);
   }
 
   public function scopeSearch(Builder $query, string $searchTerm)
@@ -53,6 +46,12 @@ class Post extends Model
     return $query->whereHas('categories', function (Builder $query) use ($category) {
       $query->where('slug', $category);
     });
+  }
+
+  public function scopePopular(Builder $query)
+  {
+    return $query->withCount('likes')
+      ->orderBy('likes_count', 'DESC');
   }
 
   public function author()
@@ -96,5 +95,10 @@ class Post extends Model
     $readingTime = ceil($wordCount / 200); // Assuming average reading speed of 200 words per minute
 
     return $readingTime || 1;
+  }
+
+  public function getThumbnailUrl()
+  {
+    return str_contains($this->image, 'http') ? $this->image : Storage::disk('public')->url($this->image);
   }
 }

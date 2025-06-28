@@ -22,7 +22,7 @@
     <div
       class="article-actions-bar my-6 flex text-sm items-center justify-between border-t border-b border-gray-100 py-4 px-2">
       <div class="flex items-center">
-        <livewire:like-button :key="'like-button' . $post->id" :$post class="ml-2">
+        <livewire:like-button :key="'like-button-' . $post->id" :$post class="ml-2">
       </div>
       <div>
         <div class="flex items-center">
@@ -44,7 +44,7 @@
 
     <div class="flex items-center space-x-4 mt-10">
       @foreach ($post->categories as $category)
-        <x-posts.category-badge :key="'category-badge' . $category->id" :$category />
+        <x-posts.category-badge :key="'category-badge-' . $category->id" :$category />
       @endforeach
     </div>
 
